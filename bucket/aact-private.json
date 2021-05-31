@@ -1,0 +1,33 @@
+{
+    "##": "This package is for private use only. Requires password for installation to proceed.",
+    "version": "4.0-r1",
+    "description": "Microsoft product activator",
+    "license": "Proprietary",
+    "url": "https://www.googleapis.com/drive/v3/files/1xO8LVmMCKsEo4Lp-dmKhi0R-frqHc6vo?alt=media&key=AIzaSyAiaA0bWx34SyfTRvyl4UCCHwsCkvUBECc#/dl.7z_",
+    "hash": "15e22e63f8acd0ebbe23fa73ee1e72f378c92b4da3986a754852a92e7bd70224",
+    "installer": {
+        "script": [
+            "$bucketdir = Find-BucketDirectory($bucket)",
+            "Import-Module $bucketdir\\..\\scripts\\pw\\pw_check.psm1",
+            "$key = Get-Key",
+            "if (!($key)) {",
+            "   Write-Host 'Password incorrect -- abort installation' -ForegroundColor Red",
+            "   break;",
+            "}",
+            "Write-Host 'Password is correct' -ForegroundColor Green",
+            "Invoke-ExternalCommand 7z -ArgumentList @('x', '-bso0', \"-o$dir\", \"-p$key\", \"$dir\\dl.7z_\") | Out-Null"
+        ]
+    },
+    "bin": [
+        [
+            "AAct_x64.exe",
+            "AAct"
+        ]
+    ],
+    "shortcuts":[
+        [
+            "AAct_x64.exe",
+            "AAct"
+        ]
+    ]
+}
