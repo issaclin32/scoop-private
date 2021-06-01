@@ -15,7 +15,8 @@
             "   break;",
             "}",
             "Write-Host 'Password is correct' -ForegroundColor Green",
-            "Invoke-ExternalCommand 7z -ArgumentList @('x', '-bso0', \"-o$dir\", \"-p$key\", \"$dir\\dl.7z_\") | Out-Null"
+            "Invoke-ExternalCommand 7z -ArgumentList @('x', '-bso0', \"-o$dir\", \"-p$key\", \"$dir\\dl.7z_\") | Out-Null",
+            "Remove-Item \"$dir\\dl.7z_\""
         ]
     },
     "bin": [
