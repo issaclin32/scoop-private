@@ -7,8 +7,8 @@
     "hash": "065B0C6387D61168C191D1E1B62CDB9E01C030625DBD131F4B1477A8C956FDE5",
     "installer": {
         "script": [
-            "$bucketdir = Find-BucketDirectory($bucket)",
-            "Import-Module $bucketdir\\..\\scripts\\pw\\pw_check.psm1",
+            "$scriptdir = (Find-BucketDirectory $bucket)+'\\..\\scripts'",
+            "Import-Module $scriptdir\\pw\\pw_check.psm1",
             "$key = Get-Key",
             "if (!($key)) {",
             "   Write-Host 'Password incorrect -- abort installation' -ForegroundColor Red",
