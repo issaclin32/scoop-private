@@ -1,5 +1,5 @@
 #Requires -Version 3.0
-Function Encrypt-String{
+function Encrypt-String{
 Param(
     
     [Parameter(
@@ -30,7 +30,7 @@ Param(
 
 }
 
-Function Decrypt-String{
+function Decrypt-String{
     Param(
         [Parameter(
             Mandatory=$True,
@@ -63,7 +63,7 @@ Function Decrypt-String{
     
     }
 
-Function Validate-Key {
+function Validate-Key {
     param(
         [Parameter(Mandatory)][String]$Key,
         [Parameter(Mandatory)][String]$TestString,
@@ -82,7 +82,7 @@ Function Validate-Key {
     }
 }
 
-Function Load-Or-Input-Key {
+function Load-Or-Input-Key {
     param(
         [Parameter(Mandatory)][String]$KeyFilePath,
         [Parameter(Mandatory)][String]$TestString,
@@ -109,7 +109,7 @@ Function Load-Or-Input-Key {
 }
 
 # quick patch for applying on Scoop manifests
-Function Get-Key {
+function Get-Key {
     $key_file_path = ($PSScriptRoot+"\password.cfg")
     $test_string = Get-Content -Path ($PSScriptRoot+"\test_string.cfg") -Encoding ascii
     $encrypted_test_string = Get-Content -Path ($PSScriptRoot+"\encrypted_test_string.cfg") -Encoding ascii
@@ -121,4 +121,38 @@ Function Get-Key {
     }
 }
 
+# new method
+function Expand-EncryptedArchive {
+    param(
+        [Parameter(Mandatory)]
+        [Alias("aPath")]
+        [String]$ArchivePath,
+        
+        [Parameter(Mandatory)]
+        [Alias("oDir")]
+        [String]$OutputDirectory
+    )
+    $key = Get-Key
+    if ($key) {
+        $proc = Start-Process '7z.exe' -ArgumentList @('x', '-bso0', "-o$OutputDirectory", "-p$key", $ArchivePath) -PassThru
+        while(Get-Process -Name '7z' -ErrorAction SilentlyContinue) {
+            Start-Sleep -Milliseconds 200
+        }
+        if ($proc.ExitCode -eq 0) {
+            Write-Host 'Password is correct' -ForegroundColor Green
+            return
+        } else {
+            Write-Host ("Error: Archive '{0}' cannot be properly extracted (exit code: {1})" -f $ArchivePath, $proc.ExitCode) -ForegroundColor Red
+            Write-Host 'Abort installation' -ForegroundColor Red
+            exit(1)
+        }
+    } else {
+        Write-Host 'Password incorrect' -ForegroundColor Red
+        Write-Host 'Abort installation' -ForegroundColor Red
+        exit(1)
+    }
+    
+}
+
 Export-ModuleMember -Function Get-Key
+Export-ModuleMember -Function Expand-EncryptedArchive

@@ -9,13 +9,7 @@
         "script": [
             "$scriptdir = (Find-BucketDirectory $bucket)+'\\..\\scripts'",
             "Import-Module $scriptdir\\pw\\pw_check.psm1",
-            "$key = Get-Key",
-            "if (!($key)) {",
-            "   Write-Host 'Password incorrect -- abort installation' -ForegroundColor Red",
-            "   break;",
-            "}",
-            "Write-Host 'Password is correct' -ForegroundColor Green",
-            "Invoke-ExternalCommand 7z -ArgumentList @('x', '-bso0', \"-o$dir\", \"-p$key\", \"$dir\\dl.7z_\") | Out-Null",
+            "Expand-EncryptedArchive -aPath \"$dir\\dl.7z_\" -oDir \"$dir\"",
             "Remove-Item \"$dir\\dl.7z_\""
         ]
     },
