@@ -121,7 +121,6 @@ function Get-Key {
     }
 }
 
-# new method
 function Expand-EncryptedArchive {
     param(
         [Parameter(Mandatory)]
@@ -130,28 +129,42 @@ function Expand-EncryptedArchive {
         
         [Parameter(Mandatory)]
         [Alias("oDir")]
-        [String]$OutputDirectory
+        [String]$OutputDirectory,
+
+        [switch]$ExitIfError = $false,
+
+        [switch]$Removal = $false
     )
+
     $key = Get-Key
-    if ($key) {
-        $proc = Start-Process '7z.exe' -ArgumentList @('x', '-bso0', "-o$OutputDirectory", "-p$key", $ArchivePath) -PassThru
-        while(Get-Process -Name '7z' -ErrorAction SilentlyContinue) {
-            Start-Sleep -Milliseconds 200
-        }
-        if ($proc.ExitCode -eq 0) {
-            Write-Host 'Password is correct' -ForegroundColor Green
-            return
-        } else {
-            Write-Host ("Error: Archive '{0}' cannot be properly extracted (exit code: {1})" -f $ArchivePath, $proc.ExitCode) -ForegroundColor Red
+    if(!(key)) {
+        Write-Host 'Password incorrect' -ForegroundColor Red
+        if ($ExitOnError) {
             Write-Host 'Abort installation' -ForegroundColor Red
             exit(1)
         }
-    } else {
-        Write-Host 'Password incorrect' -ForegroundColor Red
-        Write-Host 'Abort installation' -ForegroundColor Red
-        exit(1)
+        else {return $False}
     }
-    
+
+    $proc = Start-Process '7z.exe' -ArgumentList @('x', '-bso0', "-o$OutputDirectory", "-p$key", $ArchivePath) -PassThru
+    while(Get-Process -Name '7z' -ErrorAction SilentlyContinue) {
+        Start-Sleep -Milliseconds 200
+    }
+
+    if ($proc.ExitCode -ne 0) {
+        Write-Host ("Error: Archive '{0}' cannot be properly extracted (exit code: {1})" -f $ArchivePath, $proc.ExitCode) -ForegroundColor Red
+        if ($ExitOnError) {
+            Write-Host 'Abort installation' -ForegroundColor Red
+            exit(1)
+        }
+        else {return $False}
+    }
+
+    Write-Host 'Password is correct' -ForegroundColor Green
+    if ($Removal) {Remove-Item $ArchivePath}
+
+    if ($ExitIfError) {return}  # This avoids the use of '... | Out-Null'
+    else {return $True} # This allows us to check if the archive is properly extracted by 'if (Expand-EncryptedArchive ...)'
 }
 
 Export-ModuleMember -Function Get-Key

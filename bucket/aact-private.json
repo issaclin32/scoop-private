@@ -9,8 +9,8 @@
         "script": [
             "$scriptdir = (Find-BucketDirectory $bucket)+'\\..\\scripts'",
             "Import-Module $scriptdir\\pw\\pw_check.psm1",
-            "Expand-EncryptedArchive -aPath \"$dir\\dl.7z_\" -oDir \"$dir\"",
-            "Remove-Item \"$dir\\dl.7z_\""
+            "Expand-EncryptedArchive -aPath \"$dir\\dl.7z_\" -oDir \"$dir\" -ExitIfError -Removal",
+            "#Remove-Item \"$dir\\dl.7z_\""
         ]
     },
     "bin": [
