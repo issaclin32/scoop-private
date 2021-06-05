@@ -10,13 +10,7 @@
         "script": [
             "$scriptdir = (Find-BucketDirectory $bucket)+'\\..\\scripts'",
             "Import-Module $scriptdir\\pw\\pw_check.psm1",
-            "$key = Get-Key",
-            "if (!($key)) {",
-            "   Write-Host 'Password incorrect -- abort installation' -ForegroundColor Red",
-            "   break;",
-            "}",
-            "Write-Host 'Password is correct' -ForegroundColor Green",
-            "Invoke-ExternalCommand 7z -ArgumentList @('x', '-bso0', \"-o$dir\\setup\", \"-p$key\", \"$dir\\dl.7z_\") | Out-Null",
+            "Expand-EncryptedArchive -aPath \"$dir\\dl.7z_\" -oDir \"$dir\\setup\" -ExitIfError -Removal",
             "# --- '/s' switch requires setup.iss, it can be created with setup.exe /r",
             "Invoke-ExternalCommand \"$dir\\setup\\PhotoImpact X3\\setup.exe\" -ArgumentList @('/s') -RunAs | Out-Null",
             "Stop-Process -Name Monitor -ErrorAction SilentlyContinue | Out-Null",
@@ -25,7 +19,7 @@
             "# Invoke-ExternalCommand reg -ArgumentList @('delete', 'HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run', '/v', 'Ulead AutoDetector v2', '/f') -RunAs | Out-Null",
             "sudo \"$scriptdir\\photoimpactX3\\remove_startup.ps1\"",
             "Copy-Item \"$dir\\setup\\PhotoImpact X3\\Ulead PhotoImpact X3.msi\" \"$dir\\uninst.msi\" | Out-Null",
-            "Remove-Item \"$dir\\dl.7z_\", \"$dir\\setup\" -Force -Recurse"
+            "Remove-Item \"$dir\\setup\" -Force -Recurse"
         ]
     },
     "uninstaller": {

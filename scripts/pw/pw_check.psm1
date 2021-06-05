@@ -146,10 +146,7 @@ function Expand-EncryptedArchive {
         else {return $False}
     }
 
-    $proc = Start-Process '7z.exe' -ArgumentList @('x', '-bso0', "-o$OutputDirectory", "-p$key", $ArchivePath) -PassThru
-    while(Get-Process -Name '7z' -ErrorAction SilentlyContinue) {
-        Start-Sleep -Milliseconds 200
-    }
+    $proc = Start-Process '7z.exe' -ArgumentList @('x', '-bso0', "-o$OutputDirectory", "-p$key", $ArchivePath) -PassThru -Wait
 
     if ($proc.ExitCode -ne 0) {
         Write-Host ("Error: Archive '{0}' cannot be properly extracted (exit code: {1})" -f $ArchivePath, $proc.ExitCode) -ForegroundColor Red

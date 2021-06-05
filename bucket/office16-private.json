@@ -9,17 +9,11 @@
         "script": [
             "$scriptdir = (Find-BucketDirectory $bucket)+'\\..\\scripts'",
             "Import-Module $scriptdir\\pw\\pw_check.psm1",
-            "$key = Get-Key",
-            "if (!($key)) {",
-            "   Write-Host 'Password incorrect -- abort installation' -ForegroundColor Red",
-            "   break;",
-            "}",
-            "Write-Host 'Password is correct' -ForegroundColor Green",
             "New-Item \"$dir\\setup\" -ItemType Directory | Out-Null",
-            "Invoke-ExternalCommand 7z -ArgumentList @('x', '-bso0', \"-o$dir\\setup\", \"-p$key\", \"$dir\\dl.7z_\") | Out-Null",
+            "Expand-EncryptedArchive -aPath \"$dir\\dl.7z_\" -oDir \"$dir\\setup\" -ExitIfError -Removal",
             "Invoke-ExternalCommand \"$dir\\setup\\Office16_proplus\\setup.exe\" -ArgumentList @('/adminfile', \"$dir\\setup\\msp\\office_preset2.msp\") -RunAs | Out-Null",
             "Invoke-ExternalCommand \"$dir\\setup\\Office16_visio\\setup.exe\" -ArgumentList @('/adminfile', \"$dir\\setup\\msp\\visio.msp\") -RunAs | Out-Null",
-            "Remove-Item \"$dir\\dl.7z_\", \"$dir\\setup\" -Force -Recurse"
+            "Remove-Item \"$dir\\setup\" -Force -Recurse"
         ]
     },
     "uninstaller": {
