@@ -1,0 +1,9 @@
+<Configuration>
+
+  <Add OfficeClientEdition="64" Channel="PerpetualVL2019">
+    <Product ID="ProjectPro2019Volume">
+      <Language ID="zh-tw" />
+    </Product>
+  </Add>
+<Display Level="None" AcceptEULA="TRUE" />
+</Configuration>
