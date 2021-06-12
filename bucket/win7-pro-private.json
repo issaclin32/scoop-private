@@ -10,7 +10,7 @@
             "$scriptdir = (Find-BucketDirectory $bucket)+'\\..\\scripts'",
             "Import-Module $scriptdir\\pw\\pw_check.psm1",
             "Expand-EncryptedArchive -aPath \"$dir\\dl.7z_\" -oDir \"$dir\" -ExitIfError -Removal",
-            "Write-Host \"ISO image file has been saved in $dir.\""
+            "Write-Host \"ISO image file has been saved in $dir\" -ForegroundColor Green"
         ]
     }
 }
