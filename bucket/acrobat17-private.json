@@ -5,7 +5,7 @@
     "license": "Proprietary",
     "url": "https://www.googleapis.com/drive/v3/files/11rGZ3-WphLEHf_QigGnM5ZyJz3620guH?alt=media&key=AIzaSyAiaA0bWx34SyfTRvyl4UCCHwsCkvUBECc#/dl.7z_",
     "hash": "E48B36EDC0C15684A15E3DA30490650A0CC739690E6FC5091DE3F467A9A876B3",
-    "depends": "sudo",
+    "depends": "gsudo",
     "installer": {
         "script": [
             "$scriptdir = (Find-BucketDirectory $bucket)+'\\..\\scripts'",
